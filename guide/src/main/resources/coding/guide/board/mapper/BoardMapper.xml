@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- BoardMapper Xml -->
+<mapper namespace="coding.guide.board.mapper.BoardMapper">
+
+<select id="readBoard" parameterType="java.lang.Long" resultType="coding.guide.board.dto.response.ReadBoardDTO">
+    SELECT 
+        tb.bno,
+        tb.title,
+        tb.content,
+        tb.writer,
+        tb.createDate,
+        tb.updateDate
+            FROM tbl_board tb
+                WHERE bno = #{bno}
+</select>
+
+
+
+
+</mapper>
