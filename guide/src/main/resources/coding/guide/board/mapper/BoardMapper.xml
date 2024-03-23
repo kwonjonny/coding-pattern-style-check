@@ -6,6 +6,7 @@
 <!-- BoardMapper Xml -->
 <mapper namespace="coding.guide.board.mapper.BoardMapper">
 
+<!-- 게시물 조회 -->
 <select id="readBoard" parameterType="java.lang.Long" resultType="coding.guide.board.dto.response.ReadBoardDTO">
     SELECT 
         tb.bno,
@@ -18,7 +19,131 @@
                 WHERE bno = #{bno}
 </select>
 
+<!-- 게시물 존재 검증 -->
+<select id="existByBoardId" parameterType="java.lang.Long" resultType="java.lang.Long">
+    SELECT COUNT(*)
+        FROM 
+            tbl_board 
+                WHERE bno = #{bno}
+</select>
 
+<update id="updateBoard" parameterType="coding.guide.board.dto.request.UpdateBoardDTO">
+    UPDATE 
+        tbl_board 
+            SET 
+                title       = #{title},
+                content     = #{content},
+                writer      = #{writer},
+                updateDate  = CURRENT_TIMESTAMP
+                    WHERE bno = #{bno}
+</update>
 
+<!-- 게시물 리스트 -->
+<select id="listBoard" parameterType="coding.guide.board.dto.response.ListBoardDTO" resultType="coding.guide.board.dto.response.ListBoardDTO">
+    SELECT
+        tb.bno,
+        tb.title,
+        tb.content,
+        tb.writer,
+        tb.createDate,
+        tb.updateDate
+            FROM tbl_board tb 
+            <if test="keyword != null and types != null">
+                <trim prefix="WHERE (" prefixOverrides="or" suffix=")">
+                <foreach collection="types" item="type" separator=" OR ">
+                        <if test='type == "t"'>
+                            title like concat('%', #{keyword}, '%')
+                        </if>
+                        <if test='type == "c"'>
+                            content concat('%', #{keyword}, '%')
+                        </if>
+                        <if test='type == "w"'>
+                            writer concat('%', #{keyword}, '%')
+                        </if>
+                </foreach>
+                </trim>
+                </if>
+                 <if test="startDate != null">
+                    AND tb.createDate >= #{startDate}
+                </if>
+                <if test="endDate != null">
+                    AND tb.createDate &lt;= #{endDate}
+                </if>
+            ORDER BY tb.bno DESC 
+            LIMIT #{skip}, #{size}
+</select>
+
+<!-- 검색조건에 따른 마지막 페이지 -->
+<select id="boardLastPage" resultType="int">
+    SELECT COUNT(*)
+            FROM (
+                    SELECT
+                    tb.bno,
+                    tb.title,
+                    tb.content,
+                    tb.writer,
+                    tb.createDate,
+                    tb.updateDate
+                        FROM tbl_board tb 
+                        <if test="keyword != null and types != null">
+                        <trim prefix="WHERE (" prefixOverrides="or" suffix=")">
+                        <foreach collection="types" item="type" separator=" OR ">
+                                <if test='type == "t"'>
+                                    tb.title like concat('%', #{keyword}, '%')
+                                </if>
+                                <if test='type == "c"'>
+                                    tb.content concat('%', #{keyword}, '%')
+                                </if>
+                                <if test='type == "w"'>
+                                    tb.writer concat('%', #{keyword}, '%')
+                                </if>
+                        </foreach>
+                        </trim>
+                        </if>
+                        <if test="startDate != null">
+                            AND tb.createDate >= #{startDate}
+                        </if>
+                        <if test="endDate != null">
+                            AND tb.createDate &lt;= #{endDate}
+                        </if>
+                    ) as boardLastPage
+</select>
+
+<!-- 토탈 값 -->
+<select id="boardTotal" resultType="int">
+  SELECT COUNT(*) 
+            FROM (
+                    SELECT 
+                    tb.bno,
+                    tb.title,
+                    tb.content,
+                    tb.writer,
+                    tb.createDate,
+                    tb.updateDate
+                        FROM tbl_board tb 
+                        <if test="keyword != null and types != null">
+                        <trim prefix="WHERE (" prefixOverrides="or" suffix=")">
+                        <foreach collection="types" item="type" separator=" OR ">
+                                <if test='type == "t"'>
+                                    tb.title like concat('%', #{keyword}, '%')
+                                </if>
+                                <if test='type == "c"'>
+                                    tb.content concat('%', #{keyword}, '%')
+                                </if>
+                                <if test='type == "w"'>
+                                    tb.writer concat('%', #{keyword}, '%')
+                                </if>
+                        </foreach>
+                        </trim>
+                        </if>
+                        <if test="startDate != null">
+                            AND tb.createDate >= #{startDate}
+                        </if>
+                        <if test="endDate != null">
+                            AND tb.createDate &lt;= #{endDate}
+                        </if>
+                LIMIT #{countEnd}
+                ) as total
+</select>
 
 </mapper>
