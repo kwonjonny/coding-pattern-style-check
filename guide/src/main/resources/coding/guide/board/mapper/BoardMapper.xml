@@ -27,6 +27,7 @@
                 WHERE bno = #{bno}
 </select>
 
+<!-- 게시글 수정 -->
 <update id="updateBoard" parameterType="coding.guide.board.dto.request.UpdateBoardDTO">
     UPDATE 
         tbl_board 
@@ -37,6 +38,32 @@
                 updateDate  = CURRENT_TIMESTAMP
                     WHERE bno = #{bno}
 </update>
+
+<!-- 게시글 삭제 -->
+<delete id="deleteBoard" parameterType="java.lang.Long" resultType="java.lang.Long">
+    DELETE FROM 
+        tbl_board 
+            WHERE bno = #{bno}
+</delete>
+
+<!-- 게시글 생성 -->
+<insert id="createBoard" parameterType="coding.guide.board.dto.request.CreateBoardDTO"
+useGeneratedKeys="true" keyProperty="bno">
+    INSERT 
+        tbl_board
+            (title, content, writer, createDate, updateDate)
+            VALUES 
+                (
+                    #{title},
+                    #{content},
+                    #{writer},
+                    CURRENT_TIMESTAMP,
+                    CURRENT_TIMESTAMP
+                )
+                <selectKey resultType="long" keyProperty="bno" order="AFTER">
+                        SELECT LAST_INSERT_ID()
+                </selectKey>
+</insert>
 
 <!-- 게시물 리스트 -->
 <select id="listBoard" parameterType="coding.guide.board.dto.response.ListBoardDTO" resultType="coding.guide.board.dto.response.ListBoardDTO">

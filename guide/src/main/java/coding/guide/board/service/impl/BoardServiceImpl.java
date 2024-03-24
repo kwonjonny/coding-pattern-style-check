@@ -72,22 +72,24 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public Integer createBoard(CreateBoardDTO createBoardDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createBoard'");
+    public Long createBoard(CreateBoardDTO createBoardDTO) {
+        Long createBoard = boardMapper.createBoard(createBoardDTO);
+        return createBoard;
     }
 
     @Override
     @Transactional
-    public Integer deleteBoard(Long bno) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteBoard'");
+    public Long deleteBoard(Long bno) {
+        boardValidationService.existByBoardId(bno);
+        Long deleteBoard = boardMapper.deleteBoard(bno);
+        return deleteBoard;
     }
 
     @Override
     @Transactional
-    public Integer updateBoard(UpdateBoardDTO updateBoardDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateBoard'");
+    public Long updateBoard(UpdateBoardDTO updateBoardDTO) {
+        boardValidationService.existByBoardId(updateBoardDTO.getBno());
+        Long updateBoard = boardMapper.updateBoard(updateBoardDTO);
+        return updateBoard;
     }
 }

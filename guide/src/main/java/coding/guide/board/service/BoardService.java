@@ -12,8 +12,8 @@ import coding.guide.util.paging.PageResponseDTO;
  */
 public interface BoardService {
     ReadBoardDTO readBoard(Long bno);
-    Integer createBoard(CreateBoardDTO createBoardDTO);
-    Integer deleteBoard(Long bno);
-    Integer updateBoard(UpdateBoardDTO updateBoardDTO);
+    Long createBoard(CreateBoardDTO createBoardDTO);
+    Long deleteBoard(Long bno);
+    Long updateBoard(UpdateBoardDTO updateBoardDTO);
     PageResponseDTO<ListBoardDTO> listBoard(PageRequestDTO pageRequestDTO);
 }
